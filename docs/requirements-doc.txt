@@ -1,0 +1,7 @@
+myst-nb
+sphinx-autoapi
+sphinx-rtd-theme
+sphinx-autobuild
+pandas
+python-dotenv
+ghp-import
