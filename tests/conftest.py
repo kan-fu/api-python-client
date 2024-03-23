@@ -3,6 +3,7 @@ import os
 import pytest
 from dotenv import load_dotenv
 from onc import ONC
+from pathlib import Path
 
 load_dotenv(override=True)
 token = os.getenv("TOKEN")
@@ -37,3 +38,20 @@ class Util:
                 assert data[key] is None
             else:
                 assert isinstance(data[key], val_type)
+
+    @staticmethod
+    def update_file_with_token_and_qa(tmp_py: Path) -> None:
+        """
+        Modify tmp_py inplace with the correct token and make it test against QA environment.
+
+        Assume that tmp_py initiate onc object with a dummy "YOUR_TOKEN" argument.
+        """
+        with open(tmp_py) as f:
+            contents = f.readlines()
+        index = contents.index('onc = ONC("YOUR_TOKEN")\n')
+        contents.insert(
+            index + 1,
+            f"onc.token, onc.production, onc.timeout = '{token}', False, 300\n",  # noqa: E501
+        )
+        with open(tmp_py, "w") as f:
+            f.writelines(contents)
